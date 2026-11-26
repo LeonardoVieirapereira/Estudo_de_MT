@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livro Interativo de Estatística — Páginas & Lousa Matemática</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-desk: #e5dec9;
+            --paper: #fdfbf7;
+            --ink: #1e293b;
+            --navy: #1e3a8a;
+            --gold: #b45309;
+            --chalkboard: #122e22;
+            --chalkboard-border: #6b4423;
+            --chalk: #f8fafc;
+            --chalk-yellow: #fde047;
+            --chalk-blue: #7dd3fc;
+            --chalk-green: #6ee7b7;
+            --chalk-pink: #fda4af;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Lora', serif;
+            background-color: var(--bg-desk);
+            background-image: radial-gradient(#c7bea8 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        /* Estrutura do Livro Aberto / Página */
+        .book-wrapper {
+            width: 100%;
+            max-width: 880px;
+            background: var(--paper);
+            border-radius: 6px 14px 14px 6px;
+            box-shadow: -8px 0 0 #1e3a8a, -12px 6px 25px rgba(0,0,0,0.18), 0 15px 40px rgba(0,0,0,0.12);
+            border: 1px solid #d6cfc2;
+            padding: 2.5rem 3.2rem;
+            position: relative;
+            background-image: linear-gradient(to right, rgba(30,58,138,0.06) 0%, transparent 4%),
+                              linear-gradient(#eee8dc 1px, transparent 1px);
+            background-size: 100% 100%, 100% 2.1rem;
+        }
+
+        /* Cabeçalho do Livro e Seletor de Capítulos */
+        .book-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px double var(--navy);
+            padding-bottom: 0.85rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .book-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            color: var(--navy);
+            font-weight: 800;
+        }
+        select.chapter-select {
+            font-family: 'Lora', serif;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            color: var(--navy);
+            font-weight: 600;
+            max-width: 340px;
+            cursor: pointer;
+        }
+
+        /* Slide da Página */
+        .page-slide {
+            animation: pageTurn 0.35s ease;
+        }
+        @keyframes pageTurn {
+            from { opacity: 0; transform: translateX(15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .cap-tag {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.78rem;
+            color: var(--gold);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        h1.cap-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--navy);
+            margin: 0.25rem 0 1rem;
+            line-height: 1.2;
+        }
+        .cap-text {
+            font-size: 1.12rem;
+            line-height: 1.75;
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+        .formula-pill {
+            font-family: 'Fira Code', monospace;
+            background: #f1f5f9;
+            border-left: 4px solid var(--navy);
+            padding: 0.7rem 1rem;
+            font-size: 0.9rem;
+            color: var(--navy);
+            margin: 1rem 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        /* Ilustração Didática */
+        .diagram-card {
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0.9rem;
+            margin: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .diagram-card span {
+            display: block;
+            font-size: 0.82rem;
+            font-style: italic;
+            color: #64748b;
+            margin-top: 0.4rem;
+        }
+
+        /* Área da Questão no Livro */
+        .quiz-card {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-left: 4px solid var(--gold);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-top: 1.25rem;
+        }
+        .quiz-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+        }
+        .quiz-header strong { color: var(--gold); font-size: 0.9rem; text-transform: uppercase; }
+        .quiz-question { font-weight: 600; font-size: 1.05rem; margin-bottom: 0.85rem; }
+        .options-list { display: flex; flex-direction: column; gap: 0.45rem; }
+        .opt-item {
+            font-family: 'Lora', serif;
+            text-align: left;
+            padding: 0.65rem 1rem;
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.98rem;
+            transition: 0.2s;
+        }
+        .opt-item:hover { border-color: var(--navy); background: #eff6ff; }
+        .opt-item.right { background: #dcfce7; border-color: #15803d; color: #14532d; font-weight: 600; }
+        .opt-item.wrong { background: #fee2e2; border-color: #b91c1c; color: #7f1d1d; }
+
+        /* Controles de Paginação (Slide) */
+        .book-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #cbd5e1;
+        }
+        .nav-btn {
+            font-family: 'Lora', serif;
+            background: var(--navy);
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+        .page-indicator { font-family: 'Fira Code', monospace; font-size: 0.88rem; color: #475569; }
+
+        /* QUADRO / LOUSA MATEMÁTICA NO CANTO SUPERIOR DIREITO (Móvel, Expansível e Detalhado) */
+        .chalkboard-widget {
+            position: fixed;
+            top: 1.25rem;
+            right: 1.25rem;
+            width: 345px;
+            max-width: calc(100vw - 2rem);
+            background-color: var(--chalkboard);
+            background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 0);
+            background-size: 16px 16px;
+            color: var(--chalk);
+            border: 7px solid var(--chalkboard-border);
+            border-radius: 12px;
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.5), 0 14px 34px rgba(0,0,0,0.4);
+            z-index: 999;
+            transition: width 0.3s ease;
+            overflow: hidden;
+        }
+        .chalkboard-widget.expanded {
+            width: min(620px, calc(100vw - 2rem));
+        }
+        .board-bar {
+            background: rgba(0,0,0,0.38);
+            padding: 0.6rem 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed rgba(255,255,255,0.22);
+            cursor: grab;
+            user-select: none;
+        }
+        .board-bar:active {
+            cursor: grabbing;
+        }
+        .board-bar span {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: var(--chalk-yellow);
+            font-weight: 600;
+        }
+        .board-actions button {
+            background: rgba(255,255,255,0.14);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.25rem 0.6rem;
+            border-radius: 5px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.74rem;
+            cursor: pointer;
+            margin-left: 4px;
+            transition: 0.2s;
+        }
+        .board-actions button:hover { background: rgba(255,255,255,0.28); }
+        .board-body {
+            padding: 1.1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.83rem;
+            line-height: 1.65;
+            max-height: 205px;
+            overflow-y: auto;
+        }
+        .chalkboard-widget.expanded .board-body {
+            max-height: 410px;
+            font-size: 0.92rem;
+        }
+
+        /* Estilos Didáticos Dentro da Lousa */
+        .chalk-title {
+            color: var(--chalk-yellow);
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-bottom: 1px dashed rgba(253, 224, 71, 0.35);
+            padding-bottom: 0.4rem;
+            margin-bottom: 0.85rem;
+        }
+        .chalk-block {
+            margin-bottom: 0.75rem;
+            animation: chalkWrite 0.4s ease forwards;
+        }
+        @keyframes chalkWrite {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chalk-label {
+            display: inline-block;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--chalk-blue);
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+        .chalk-formula-box {
+            background: rgba(125, 211, 252, 0.1);
+            border: 1px dashed var(--chalk-blue);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            color: var(--chalk-blue);
+            margin-top: 0.2rem;
+        }
+        .chalk-calc {
+            border-left: 2px solid rgba(255,255,255,0.3);
+            padding-left: 0.75rem;
+            color: #e2e8f0;
+        }
+        .chalk-calc b { color: var(--chalk-yellow); }
+        .chalk-tip {
+            color: var(--chalk-pink);
+            font-size: 0.82rem;
+            font-style: italic;
+        }
+        .chalk-final-box {
+            background: rgba(110, 231, 183, 0.14);
+            border: 1.5px solid var(--chalk-green);
+            border-radius: 6px;
+            padding: 0.65rem 0.85rem;
+            color: var(--chalk-green);
+            font-weight: 600;
+            margin-top: 0.35rem;
+        }
+
+        @media (max-width: 700px) {
+            .book-wrapper { padding: 1.5rem 1.25rem; margin-top: 14rem; }
+            .chalkboard-widget { width: 300px; top: 0.75rem; right: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="book-wrapper">
+        <div class="book-top">
+            <div class="book-brand">∑ Compêndio Ilustrado de Estatística</div>
+            <select id="chapterSelect" class="chapter-select" onchange="goToPage(Number(this.value))"></select>
+        </div>
+
+        <!-- Conteúdo Dinâmico da Página Atual -->
+        <div id="pageContainer" class="page-slide"></div>
+
+        <!-- Navegação entre Páginas -->
+        <div class="book-footer">
+            <button id="prevBtn" class="nav-btn" onclick="changePage(-1)">← Página Anterior</button>
+            <span id="pageIndicator" class="page-indicator">Página 1 de 17</span>
+            <button id="nextBtn" class="nav-btn" onclick="changePage(1)">Próxima Página →</button>
+        </div>
+    </main>
+
+    <!-- Quadro Negro / Lousa Matemática no Canto Superior Direito (Arrastável) -->
+    <aside id="chalkboard" class="chalkboard-widget">
+        <div id="boardHeader" class="board-bar" title="Clique e arraste para mover a lousa">
+            <span>✥ Lousa de Resolução</span>
+            <div class="board-actions">
+                <button onclick="startBoardSolution()">▶ Resolver</button>
+                <button id="expandBtn" onclick="toggleBoard()">⤢ Ampliar</button>
+            </div>
+        </div>
+        <div id="boardContent" class="board-body">
+            Responda à questão ou clique em <b>"▶ Resolver"</b> para ver a explicação detalhada aqui no quadro!
+        </div>
+    </aside>
+
+    <script>
+        const pages = [
+            {
+                title: "Estatística: conceito e uso",
+                text: "A Estatística coleta, organiza e interpreta dados para apoiar decisões. Divide-se em <b>Descritiva</b> (resume dados em gráficos/tabelas) e <b>Inferencial</b> (faz previsões sobre o todo usando uma parte).",
+                formula: "Dados Brutos → Organização → Análise → Decisão",
+                svg: `<svg width="100%" height="85" viewBox="0 0 520 85">
+                        <rect x="15" y="15" width="140" height="50" rx="6" fill="#dbeafe" stroke="#1e3a8a" stroke-width="2"/>
+                        <text x="85" y="45" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">1. Coleta</text>
+                        <text x="175" y="45" font-size="18" fill="#b45309">→</text>
+                        <rect x="195" y="15" width="140" height="50" rx="6" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+                        <text x="265" y="45" text-anchor="middle" font-size="12" font-weight="bold" fill="#92400e">2. Descritiva</text>
+                        <text x="355" y="45" font-size="18" fill="#047857">→</text>
+                        <rect x="375" y="15" width="130" height="50" rx="6" fill="#dcfce7" stroke="#15803d" stroke-width="2"/>
+                        <text x="440" y="45" text-anchor="middle" font-size="12" font-weight="bold" fill="#14532d">3. Inferência</text>
+                      </svg>`,
+                caption: "Esquema visual do ciclo estatístico.",
+                question: "Calcular a média de gols apenas dos jogos já disputados no campeonato é um exemplo de:",
+                options: ["Estatística Descritiva", "Estatística Inferencial"],
+                correct: 0,
+                solution: {
+                    dados: "Conjunto observado: jogos que já aconteceram no campeonato.",
+                    regra: "Descritiva = resume dados passados | Inferencial = prevê dados futuros.",
+                    calculo: "1. O cálculo apenas sintetiza uma informação já existente.<br>2. Não estamos estimando resultados de rodadas futuras.",
+                    resposta: "✔ Estatística Descritiva (Alternativa A)"
+                }
+            },
+            {
+                title: "Pesquisa estatística",
+                text: "Pode ser <b>Censitária</b> (investiga 100% da população) ou <b>Amostral</b> (investiga uma parcela representativa quando o censo é caro ou inviável).",
+                formula: "Censo = 100%  |  Amostragem = Parcela Representativa",
+                svg: `<svg width="100%" height="80" viewBox="0 0 500 80">
+                        <circle cx="130" cy="40" r="30" fill="#1e3a8a"/><text x="130" y="44" text-anchor="middle" fill="#fff" font-size="11">100% Censo</text>
+                        <circle cx="350" cy="40" r="30" fill="#e2e8f0" stroke="#1e3a8a" stroke-width="2"/>
+                        <path d="M350 40 L350 10 A30 30 0 0 1 378 50 Z" fill="#b45309"/>
+                        <text x="425" y="44" font-size="11" fill="#1e293b">Fatia = Amostra</text>
+                      </svg>`,
+                caption: "Comparação visual entre Censo e Amostra.",
+                question: "Para testar a resistência até a quebra de um lote de 10.000 parafusos, qual pesquisa usar?",
+                options: ["Censitária", "Amostral"],
+                correct: 1,
+                solution: {
+                    dados: "Lote total N = 10.000 parafusos; Teste destrutivo (quebra a peça).",
+                    regra: "Testes destrutivos exigem Amostragem para preservar o lote.",
+                    calculo: "1. Se aplicarmos Censo (100%), todos os 10.000 parafusos serão quebrados.<br>2. Selecionamos uma pequena parcela (ex: n = 50) para testar a qualidade.",
+                    resposta: "✔ Pesquisa Amostral (Alternativa B)"
+                }
+            },
+            {
+                title: "População e amostra",
+                text: "<b>População (N)</b> é o universo total estudado. <b>Amostra (n)</b> é o subconjunto selecionado para representar essa população.",
+                formula: "n ⊂ N  (Amostra contida na População)",
+                svg: `<svg width="100%" height="90" viewBox="0 0 500 90">
+                        <ellipse cx="170" cy="45" rx="110" ry="36" fill="#eff6ff" stroke="#1e3a8a" stroke-width="2"/>
+                        <text x="170" y="49" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">População (N = 2.000)</text>
+                        <circle cx="380" cy="45" r="32" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+                        <text x="380" y="49" text-anchor="middle" font-size="11" font-weight="bold" fill="#92400e">Amostra (n)</text>
+                      </svg>`,
+                caption: "Extração da amostra n a partir da população N.",
+                question: "De 800 alunos de uma escola, 60 foram entrevistados sobre merenda. Qual é o valor de n?",
+                options: ["n = 800", "n = 60"],
+                correct: 1,
+                solution: {
+                    dados: "Total da escola = 800 alunos; Entrevistados = 60 alunos.",
+                    regra: "N (maiúsculo) = População total  |  n (minúsculo) = Amostra.",
+                    calculo: "1. Universo total: <b>N = 800</b>.<br>2. Subconjunto pesquisado: <b>n = 60</b>.",
+                    resposta: "✔ n = 60 (Alternativa B)"
+                }
+            },
+            {
+                title: "Tipos de variáveis",
+                text: "<b>Qualitativas</b> expressam categorias (<i>Nominal</i> sem ordem; <i>Ordinal</i> com ordem). <b>Quantitativas</b> expressam números (<i>Discreta</i> por contagem; <i>Contínua</i> por medição).",
+                formula: "Qualitativa (Nominal/Ordinal) • Quantitativa (Discreta/Contínua)",
+                svg: "",
+                question: "A variável 'Número de irmãos de um estudante' é classificada como:",
+                options: ["Quantitativa Discreta", "Quantitativa Contínua", "Qualitativa Ordinal"],
+                correct: 0,
+                solution: {
+                    dados: "Variável observada: quantidade de irmãos (0, 1, 2, 3...).",
+                    regra: "Contagem inteira = Discreta  |  Medição decimal = Contínua.",
+                    calculo: "1. Como o resultado é numérico, ela é <b>Quantitativa</b>.<br>2. Como contamos em números inteiros (não existe 1,5 irmão), é <b>Discreta</b>.",
+                    resposta: "✔ Quantitativa Discreta (Alternativa A)"
+                }
+            },
+            {
+                title: "Distribuição de frequência",
+                text: "Agrupa os dados contando a ocorrência de cada valor: <b>Frequência Absoluta (fᵢ)</b>, <b>Relativa (frᵢ = fᵢ / n)</b> e <b>Acumulada (Fᵢ)</b>.",
+                formula: "frᵢ = fᵢ / n    |    % = frᵢ × 100",
+                svg: "",
+                question: "Num grupo de n = 20 pessoas, 6 usam óculos. Qual a frequência relativa percentual?",
+                options: ["6%", "30%", "60%"],
+                correct: 1,
+                solution: {
+                    dados: "Frequência absoluta fᵢ = 6  |  Total da amostra n = 20.",
+                    regra: "fr% = (fᵢ ÷ n) × 100",
+                    calculo: "1. Divisão: fr = 6 ÷ 20 = <b>0,30</b><br>2. Percentual: 0,30 × 100 = <b>30%</b>",
+                    resposta: "✔ 30% (Alternativa B)"
+                }
+            },
+            {
+                title: "Representação gráfica",
+                text: "Gráficos facilitam a leitura: <b>Barras/Colunas</b> comparam categorias; <b>Setores (Pizza)</b> dividem 360° em proporções; <b>Linhas</b> mostram evolução no tempo.",
+                formula: "Ângulo no Setor (α) = (fᵢ / n) × 360°",
+                svg: `<svg width="100%" height="90" viewBox="0 0 400 90">
+                        <circle cx="200" cy="45" r="36" fill="#93c5fd" stroke="#1e3a8a" stroke-width="2"/>
+                        <path d="M200 45 L200 9 A36 36 0 0 1 236 45 Z" fill="#b45309"/>
+                        <text x="255" y="38" font-size="11" fill="#b45309" font-weight="bold">90° = 25% do círculo</text>
+                      </svg>`,
+                caption: "Proporção angular no gráfico de setores.",
+                question: "Qual ângulo representa 50% de um gráfico de setores?",
+                options: ["90°", "180°", "360°"],
+                correct: 1,
+                solution: {
+                    dados: "Percentual = 50% (0,50)  |  Circunferência total = 360°.",
+                    regra: "α = Percentual × 360°",
+                    calculo: "1. Transforme 50% em decimal: 50 ÷ 100 = <b>0,50</b><br>2. Multiplique por 360°: 0,50 × 360° = <b>180°</b>",
+                    resposta: "✔ 180° (Alternativa B)"
+                }
+            },
+            {
+                title: "Histograma de frequência",
+                text: "Gráfico de retângulos <b>justapostos (colados)</b> usado para variáveis contínuas divididas em intervalos de classe.",
+                formula: "Base = Amplitude da Classe (h)   |   Altura = Frequência (fᵢ)",
+                svg: `<svg width="100%" height="100" viewBox="0 0 460 100">
+                        <line x1="50" y1="80" x2="400" y2="80" stroke="#1e293b" stroke-width="2"/>
+                        <rect x="70" y="45" width="70" height="35" fill="#93c5fd" stroke="#1e3a8a" stroke-width="1.5"/>
+                        <rect x="140" y="20" width="70" height="60" fill="#2563eb" stroke="#1e3a8a" stroke-width="1.5"/>
+                        <rect x="210" y="35" width="70" height="45" fill="#60a5fa" stroke="#1e3a8a" stroke-width="1.5"/>
+                        <text x="175" y="14" text-anchor="middle" font-size="10" fill="#1e3a8a" font-weight="bold">Barras coladas = Continuidade</text>
+                      </svg>`,
+                caption: "Histograma: o fim de um intervalo inicia o próximo.",
+                question: "O que diferencia visualmente um Histograma de um gráfico de colunas comum?",
+                options: ["As barras são coladas umas nas outras.", "As barras são sempre horizontais."],
+                correct: 0,
+                solution: {
+                    dados: "Comparação entre Histograma e Gráfico de Colunas.",
+                    regra: "Intervalos contínuos (ex: 10⊢20, 20⊢30) não possuem lacunas.",
+                    calculo: "1. Onde termina a 1ª classe (20), começa imediatamente a 2ª classe.<br>2. Por isso, os retângulos ficam <b>justapostos (colados)</b>.",
+                    resposta: "✔ As barras são coladas umas nas outras (Alternativa A)"
+                }
+            },
+            {
+                title: "Medidas de tendência central (não agrupados)",
+                text: "<b>Média (x̄)</b>: soma dividida pelo total. <b>Mediana (Md)</b>: valor central após ordenar. <b>Moda (Mo)</b>: valor que mais se repete.",
+                formula: "x̄ = ∑xᵢ / n   |   Md = centro do rol   |   Mo = maior frequência",
+                svg: "",
+                question: "Calcule a Média e a Mediana de: {10, 4, 6, 10, 20}.",
+                options: ["Média 10 e Mediana 10", "Média 10 e Mediana 6"],
+                correct: 0,
+                solution: {
+                    dados: "Conjunto bruto: {10, 4, 6, 10, 20}  |  Total n = 5 elementos.",
+                    regra: "x̄ = (∑xᵢ) ÷ n   |   Md = termo central do Rol Ordenado",
+                    calculo: "1. <b>Média:</b> (10 + 4 + 6 + 10 + 20) ÷ 5 = 50 ÷ 5 = <b>10</b>.<br>2. <b>Ordenar (Rol):</b> {4, 6, <b>[10]</b>, 10, 20}.<br>3. O termo central (3ª posição) é <b>10</b>.<br><span class='chalk-tip'>*Atenção: nunca ache a mediana sem ordenar antes!</span>",
+                    resposta: "✔ Média 10 e Mediana 10 (Alternativa A)"
+                }
+            },
+            {
+                title: "Moda e mediana (agrupados sem intervalo)",
+                text: "Em tabelas simples (xᵢ e fᵢ), a <b>Moda</b> é o xᵢ de maior frequência fᵢ. A <b>Mediana</b> é encontrada localizando a posição <code>n/2</code> na Frequência Acumulada (Fᵢ).",
+                formula: "Posição Md = n / 2 (localizar em Fᵢ)",
+                svg: "",
+                question: "Tabela de filhos: 0 filhos (f=3), 1 filho (f=9), 2 filhos (f=4). Qual a Moda?",
+                options: ["9 filhos", "1 filho"],
+                correct: 1,
+                solution: {
+                    dados: "x₁ = 0 (f=3)  |  x₂ = 1 (f=9)  |  x₃ = 2 (f=4)",
+                    regra: "Moda (Mo) = valor da variável xᵢ com maior frequência fᵢ.",
+                    calculo: "1. Maior frequência observada: <b>f = 9</b>.<br>2. Valor correspondente de xᵢ: <b>1 filho</b>.<br><span class='chalk-tip'>*Cuidado: 9 é a contagem de famílias, não a resposta!</span>",
+                    resposta: "✔ 1 filho (Alternativa B)"
+                }
+            },
+            {
+                title: "Tendência central (sem intervalo — Média)",
+                text: "Calculamos a média multiplicando cada valor xᵢ pela sua frequência fᵢ e dividindo pelo total de elementos.",
+                formula: "x̄ = ∑(xᵢ · fᵢ) / ∑fᵢ",
+                svg: "",
+                question: "Calcule a média: Nota 5 (f = 2) e Nota 8 (f = 4).",
+                options: ["6,5", "7,0"],
+                correct: 1,
+                solution: {
+                    dados: "x₁ = 5 (f₁ = 2)   e   x₂ = 8 (f₂ = 4)",
+                    regra: "x̄ = (x₁·f₁ + x₂·f₂) ÷ (f₁ + f₂)",
+                    calculo: "1. Produtos: (5 × 2) + (8 × 4) = 10 + 32 = <b>42</b><br>2. Soma das frequências (n): 2 + 4 = <b>6</b><br>3. Divisão final: 42 ÷ 6 = <b>7,0</b>",
+                    resposta: "✔ Média = 7,0 (Alternativa B)"
+                }
+            },
+            {
+                title: "Tendência central (com intervalo de classe I)",
+                text: "Quando há faixas (ex: <code>10 ⊢ 30</code>), usamos o <b>Ponto Médio (pmᵢ)</b> como representante da classe para achar a média.",
+                formula: "pmᵢ = (L_inf + L_sup) / 2   |   x̄ = ∑(pmᵢ · fᵢ) / n",
+                svg: "",
+                question: "Qual o ponto médio da classe '40 ⊢ 60'?",
+                options: ["20", "50", "100"],
+                correct: 1,
+                solution: {
+                    dados: "Limite Inferior (L_inf) = 40  |  Limite Superior (L_sup) = 60",
+                    regra: "pmᵢ = (L_inf + L_sup) ÷ 2",
+                    calculo: "1. Soma dos extremos: 40 + 60 = <b>100</b><br>2. Divide por 2: 100 ÷ 2 = <b>50</b>",
+                    resposta: "✔ Ponto Médio = 50 (Alternativa B)"
+                }
+            },
+            {
+                title: "Medidas de dispersão",
+                text: "Medem o espalhamento dos dados: <b>Amplitude (Máx - Mín)</b>, <b>Variância (s²)</b> e <b>Desvio Padrão (s)</b>.",
+                formula: "AT = X_máx - X_mín   |   s = √Variância",
+                svg: "",
+                question: "Se a Variância (s²) de um conjunto é 16, qual é o Desvio Padrão (s)?",
+                options: ["4", "8", "256"],
+                correct: 0,
+                solution: {
+                    dados: "Variância (s²) = 16",
+                    regra: "s = √s²  (Raiz quadrada da variância)",
+                    calculo: "1. Substituindo na fórmula: s = √16<br>2. Como 4 × 4 = 16, temos <b>s = 4</b>.",
+                    resposta: "✔ Desvio Padrão s = 4 (Alternativa A)"
+                }
+            },
+            {
+                title: "Quartis",
+                text: "Dividem os dados ordenados em 4 partes de 25%: <b>Q₁ (25%)</b>, <b>Q₂ (50% = Mediana)</b> e <b>Q₃ (75%)</b>.",
+                formula: "AIQ = Q₃ - Q₁ (Amplitude Interquartil)",
+                svg: `<svg width="100%" height="65" viewBox="0 0 440 65">
+                        <rect x="20" y="15" width="100" height="25" fill="#dbeafe" stroke="#1e3a8a"/>
+                        <rect x="120" y="15" width="100" height="25" fill="#93c5fd" stroke="#1e3a8a"/>
+                        <rect x="220" y="15" width="100" height="25" fill="#60a5fa" stroke="#1e3a8a"/>
+                        <rect x="320" y="15" width="100" height="25" fill="#3b82f6" stroke="#1e3a8a"/>
+                        <text x="120" y="55" text-anchor="middle" font-size="11" font-weight="bold" fill="#b45309">Q₁</text>
+                        <text x="220" y="55" text-anchor="middle" font-size="11" font-weight="bold" fill="#b45309">Q₂</text>
+                        <text x="320" y="55" text-anchor="middle" font-size="11" font-weight="bold" fill="#b45309">Q₃</text>
+                      </svg>`,
+                caption: "Cada bloco contém exatamente 25% das observações.",
+                question: "Se Q₁ = 12 e Q₃ = 28, qual é a Amplitude Interquartil (AIQ)?",
+                options: ["16", "20", "40"],
+                correct: 0,
+                solution: {
+                    dados: "Primeiro Quartil Q₁ = 12  |  Terceiro Quartil Q₃ = 28",
+                    regra: "AIQ = Q₃ − Q₁",
+                    calculo: "1. Subtraia Q₁ de Q₃: AIQ = 28 − 12 = <b>16</b><br>2. Isso mostra o intervalo dos 50% dados centrais.",
+                    resposta: "✔ AIQ = 16 (Alternativa A)"
+                }
+            },
+            {
+                title: "Box-plot",
+                text: "Desenha os 5 números-resumo (<b>Mín, Q₁, Mediana, Q₃, Máx</b>) em uma caixa central com hastes laterais.",
+                formula: "Caixa = de Q₁ até Q₃   |   Traço interno = Mediana",
+                svg: `<svg width="100%" height="85" viewBox="0 0 460 85">
+                        <line x1="60" y1="40" x2="400" y2="40" stroke="#475569" stroke-width="2"/>
+                        <line x1="60" y1="25" x2="60" y2="55" stroke="#1e3a8a" stroke-width="2.5"/>
+                        <line x1="400" y1="25" x2="400" y2="55" stroke="#1e3a8a" stroke-width="2.5"/>
+                        <rect x="140" y="20" width="180" height="40" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+                        <line x1="210" y1="20" x2="210" y2="60" stroke="#15803d" stroke-width="3"/>
+                        <text x="60" y="74" text-anchor="middle" font-size="10">Mín</text>
+                        <text x="140" y="14" text-anchor="middle" font-size="10" fill="#b45309">Q₁</text>
+                        <text x="210" y="74" text-anchor="middle" font-size="10" fill="#15803d" font-weight="bold">Md</text>
+                        <text x="320" y="14" text-anchor="middle" font-size="10" fill="#b45309">Q₃</text>
+                        <text x="400" y="74" text-anchor="middle" font-size="10">Máx</text>
+                      </svg>`,
+                caption: "Estrutura visual do Diagrama de Caixa (Box-plot).",
+                question: "Qual linha divide o interior da caixa no Box-plot?",
+                options: ["A Média", "A Mediana (Q₂)", "A Moda"],
+                correct: 1,
+                solution: {
+                    dados: "Anatomia do Diagrama de Caixa (Box-plot).",
+                    regra: "Bordas da caixa = Q₁ e Q₃  |  Corte interno = Q₂",
+                    calculo: "1. O Box-plot representa exclusivamente medidas separatrizes (quartis).<br>2. O traço dentro do retângulo marca o <b>2º Quartil (Q₂)</b>, que é a <b>Mediana</b>.",
+                    resposta: "✔ A Mediana Q₂ (Alternativa B)"
+                }
+            },
+            {
+                title: "Construção e conversão entre gráficos",
+                text: "Converter tabela em gráfico de setores exige regra de três proporcional entre a frequência e 360°.",
+                formula: "α = (fᵢ / n) × 360°",
+                svg: "",
+                question: "Em 30 alunos, 10 preferem Geometria. Qual o ângulo no gráfico de pizza?",
+                options: ["100°", "120°", "150°"],
+                correct: 1,
+                solution: {
+                    dados: "Frequência fᵢ = 10 alunos  |  Total n = 30 alunos.",
+                    regra: "α = (fᵢ ÷ n) × 360°",
+                    calculo: "1. Simplifique a fração: 10 ÷ 30 = <b>1/3</b><br>2. Multiplique pelo círculo total: (1/3) × 360° = 360° ÷ 3 = <b>120°</b>",
+                    resposta: "✔ 120° (Alternativa B)"
+                }
+            },
+            {
+                title: "Diagrama de ramos e folhas",
+                text: "Separa cada número em <b>Ramo</b> (dezena) e <b>Folha</b> (unidade), preservando todos os dados originais.",
+                formula: "42 → Ramo: 4 | Folha: 2",
+                svg: "",
+                question: "Na linha '2 | 1 5 9' de um diagrama de ramos e folhas, qual é o maior número?",
+                options: ["9", "29", "2159"],
+                correct: 1,
+                solution: {
+                    dados: "Ramo = 2 (dezena 20)  |  Folhas = 1, 5 e 9 (unidades).",
+                    regra: "Número = (Ramo × 10) + Folha",
+                    calculo: "1. Folha 1 → 20 + 1 = <b>21</b><br>2. Folha 5 → 20 + 5 = <b>25</b><br>3. Folha 9 → 20 + 9 = <b>29</b> (Maior valor)",
+                    resposta: "✔ 29 (Alternativa B)"
+                }
+            },
+            {
+                title: "Critérios de seleção de gráficos",
+                text: "<b>Linhas</b> = tempo; <b>Setores</b> = poucas partes de um todo; <b>Barras</b> = categorias; <b>Histograma</b> = intervalos contínuos.",
+                formula: "Variável + Objetivo = Escolha do Gráfico Ideal",
+                svg: "",
+                question: "Para mostrar o crescimento da população do Brasil de 1950 a 2026, qual gráfico escolher?",
+                options: ["Gráfico de Linhas", "Gráfico de Setores (Pizza)"],
+                correct: 0,
+                solution: {
+                    dados: "Série temporal: evolução de 1950 até 2026.",
+                    regra: "Variação contínua ao longo do tempo → Gráfico de Linhas.",
+                    calculo: "1. O eixo horizontal representa os anos em sequência cronológica.<br>2. A linha conectando os pontos evidencia a tendência de crescimento.",
+                    resposta: "✔ Gráfico de Linhas (Alternativa A)"
+                }
+            }
+        ];
+
+        let currentPage = 0;
+        let typingTimer = null;
+
+        // Preencher seletor de capítulos
+        const selectEl = document.getElementById('chapterSelect');
+        pages.forEach((p, i) => {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = `${String(i + 1).padStart(2, '0')}. ${p.title}`;
+            selectEl.appendChild(opt);
+        });
+
+        function renderPage() {
+            const p = pages[currentPage];
+            selectEl.value = currentPage;
+            document.getElementById('pageIndicator').textContent = `Página ${currentPage + 1} de ${pages.length}`;
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').disabled = currentPage === pages.length - 1;
+
+            const diagramHTML = p.svg ? `<div class="diagram-card">${p.svg}<span>${p.caption}</span></div>` : '';
+            const optsHTML = p.options.map((o, idx) =>
+                `<button class="opt-item" onclick="checkAnswer(${idx}, this)">${String.fromCharCode(65 + idx)}) ${o}</button>`
+            ).join('');
+
+            const container = document.getElementById('pageContainer');
+            container.classList.remove('page-slide');
+            void container.offsetWidth;
+            container.classList.add('page-slide');
+
+            container.innerHTML = `
+                <span class="cap-tag">Capítulo ${String(currentPage + 1).padStart(2, '0')}</span>
+                <h1 class="cap-title">${p.title}</h1>
+                <p class="cap-text">${p.text}</p>
+                <div class="formula-pill">${p.formula}</div>
+                ${diagramHTML}
+                <div class="quiz-card">
+                    <div class="quiz-header">
+                        <strong>✍ Questão da Página</strong>
+                    </div>
+                    <div class="quiz-question">${p.question}</div>
+                    <div class="options-list" id="optsList">${optsHTML}</div>
+                </div>
+            `;
+
+            clearTimeout(typingTimer);
+            document.getElementById('boardContent').innerHTML =
+                `Responda à questão ou clique em <b>"▶ Resolver"</b> para ver a explicação detalhada aqui no quadro!`;
+        }
+
+        function changePage(delta) {
+            goToPage(currentPage + delta);
+        }
+
+        function goToPage(index) {
+            if (index >= 0 && index < pages.length) {
+                currentPage = index;
+                renderPage();
+            }
+        }
+
+        function checkAnswer(idx, btn) {
+            const p = pages[currentPage];
+            const buttons = document.querySelectorAll('#optsList .opt-item');
+            buttons.forEach(b => b.classList.remove('right', 'wrong'));
+
+            if (idx === p.correct) {
+                btn.classList.add('right');
+            } else {
+                btn.classList.add('wrong');
+                buttons[p.correct].classList.add('right');
+            }
+            startBoardSolution(true);
+        }
+
+        // Mantém a lousa sempre totalmente visível dentro da janela
+        function keepBoardInViewport() {
+            const board = document.getElementById('chalkboard');
+            if (!board.style.left) return;
+            const rect = board.getBoundingClientRect();
+            const maxX = Math.max(0, window.innerWidth - rect.width - 8);
+            const maxY = Math.max(0, window.innerHeight - rect.height - 8);
+            board.style.left = Math.max(8, Math.min(rect.left, maxX)) + 'px';
+            board.style.top = Math.max(8, Math.min(rect.top, maxY)) + 'px';
+        }
+
+        // Lousa Animada com Blocos Didáticos Detalhados
+        function startBoardSolution(autoExpand = false) {
+            const board = document.getElementById('chalkboard');
+            const content = document.getElementById('boardContent');
+            if (autoExpand && !board.classList.contains('expanded')) {
+                toggleBoard();
+            }
+
+            clearTimeout(typingTimer);
+            const sol = pages[currentPage].solution;
+            content.innerHTML = `<div class="chalk-title">✎ Resolução Passo a Passo — Cap. ${String(currentPage + 1).padStart(2, '0')}</div>`;
+
+            const blocks = [
+                `<div class="chalk-block"><span class="chalk-label">1. Dados do Problema</span><div>${sol.dados}</div></div>`,
+                `<div class="chalk-block"><span class="chalk-label">2. Fórmula / Conceito</span><div class="chalk-formula-box">${sol.regra}</div></div>`,
+                `<div class="chalk-block"><span class="chalk-label">3. Desenvolvimento</span><div class="chalk-calc">${sol.calculo}</div></div>`,
+                `<div class="chalk-block"><span class="chalk-label">4. Conclusão</span><div class="chalk-final-box">${sol.resposta}</div></div>`
+            ];
+
+            let idx = 0;
+            function showNextBlock() {
+                if (idx < blocks.length) {
+                    content.insertAdjacentHTML('beforeend', blocks[idx]);
+                    content.scrollTop = content.scrollHeight;
+                    idx++;
+                    typingTimer = setTimeout(showNextBlock, 550);
+                }
+            }
+            showNextBlock();
+        }
+
+        function toggleBoard() {
+            const board = document.getElementById('chalkboard');
+            const btn = document.getElementById('expandBtn');
+            board.classList.toggle('expanded');
+            btn.textContent = board.classList.contains('expanded') ? '⤡ Reduzir' : '⤢ Ampliar';
+            setTimeout(keepBoardInViewport, 310);
+        }
+
+        // Sistema de Arrastar e Soltar (Mouse e Touch) para a Lousa
+        const chalkboard = document.getElementById('chalkboard');
+        const boardHeader = document.getElementById('boardHeader');
+        let isDragging = false, offsetX = 0, offsetY = 0;
+
+        function startDrag(clientX, clientY) {
+            isDragging = true;
+            const rect = chalkboard.getBoundingClientRect();
+            offsetX = clientX - rect.left;
+            offsetY = clientY - rect.top;
+            chalkboard.style.right = 'auto';
+            chalkboard.style.left = rect.left + 'px';
+            chalkboard.style.top = rect.top + 'px';
+        }
+
+        function onDrag(clientX, clientY) {
+            if (!isDragging) return;
+            const maxX = Math.max(0, window.innerWidth - chalkboard.offsetWidth);
+            const maxY = Math.max(0, window.innerHeight - chalkboard.offsetHeight);
+            const newX = Math.max(0, Math.min(clientX - offsetX, maxX));
+            const newY = Math.max(0, Math.min(clientY - offsetY, maxY));
+            chalkboard.style.left = newX + 'px';
+            chalkboard.style.top = newY + 'px';
+        }
+
+        boardHeader.addEventListener('mousedown', e => {
+            if (e.target.tagName === 'BUTTON') return;
+            startDrag(e.clientX, e.clientY);
+        });
+        document.addEventListener('mousemove', e => onDrag(e.clientX, e.clientY));
+        document.addEventListener('mouseup', () => isDragging = false);
+
+        boardHeader.addEventListener('touchstart', e => {
+            if (e.target.tagName === 'BUTTON') return;
+            const touch = e.touches[0];
+            startDrag(touch.clientX, touch.clientY);
+        }, { passive: true });
+        document.addEventListener('touchmove', e => {
+            if (!isDragging) return;
+            const touch = e.touches[0];
+            onDrag(touch.clientX, touch.clientY);
+        }, { passive: true });
+        document.addEventListener('touchend', () => isDragging = false);
+
+        // Navegação pelas setas do teclado
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight') changePage(1);
+            if (e.key === 'ArrowLeft') changePage(-1);
+        });
+
+        renderPage();
+    </script>
+</body>
+</html>

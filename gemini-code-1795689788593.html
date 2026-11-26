@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livro Interativo de Estatística — Teoria, Ilustrações e Exercícios</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper: #fdfbf7;
+            --page-bg: #f1ece1;
+            --ink: #1e293b;
+            --ink-soft: #475569;
+            --navy: #1e3a8a;
+            --gold: #b45309;
+            --emerald: #047857;
+            --crimson: #b91c1c;
+            --border: #dcd5c7;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--page-bg);
+            color: var(--ink);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sumário Lateral (Estilo Índice de Livro) */
+        aside {
+            width: 300px;
+            background: #172554;
+            color: #f8fafc;
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+            padding: 1.5rem 1.2rem;
+            border-right: 4px solid var(--gold);
+        }
+        aside h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        aside small { color: #93c5fd; display: block; font-family: 'Inter', sans-serif; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+        aside nav a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 0.83rem;
+            padding: 0.45rem 0.6rem;
+            border-radius: 6px;
+            margin-bottom: 0.2rem;
+            transition: 0.2s;
+        }
+        aside nav a:hover { background: rgba(255,255,255,0.12); color: #fff; }
+        aside nav b { color: #fbbf24; font-family: 'JetBrains Mono', monospace; margin-right: 4px; }
+
+        /* Página do Livro */
+        main {
+            margin-left: 300px;
+            flex: 1;
+            padding: 2.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .book-sheet {
+            background: var(--paper);
+            max-width: 860px;
+            width: 100%;
+            padding: 3.5rem 4rem;
+            border-radius: 4px;
+            box-shadow: 0 12px 35px rgba(30, 41, 59, 0.12), 0 0 0 1px var(--border);
+        }
+        .book-cover {
+            text-align: center;
+            border-bottom: 2px double var(--navy);
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+        }
+        .book-cover span { color: var(--gold); font-weight: 700; letter-spacing: 2px; font-size: 0.8rem; text-transform: uppercase; }
+        .book-cover h2 { font-family: 'Crimson Pro', serif; font-size: 2.6rem; color: var(--navy); margin: 0.5rem 0; }
+        .book-cover p { font-family: 'Crimson Pro', serif; font-size: 1.2rem; font-style: italic; color: var(--ink-soft); }
+
+        /* Capítulos */
+        .chapter {
+            margin-bottom: 3.5rem;
+            padding-bottom: 2.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .chapter-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--gold);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .chapter h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.85rem;
+            color: var(--navy);
+            margin: 0.25rem 0 1rem;
+        }
+        .chapter p {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.2rem;
+            line-height: 1.75;
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+        .formula {
+            background: #f4f1ea;
+            border-left: 4px solid var(--navy);
+            padding: 0.9rem 1.2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--navy);
+            margin: 1.2rem 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        /* Quadro Ilustrativo / Passo a Passo Visual */
+        .figure-box {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        .figure-box figcaption {
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+            margin-top: 0.75rem;
+            font-style: italic;
+        }
+
+        /* Caixa de Exercício Interativo */
+        .exercise-box {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-top: 4px solid var(--gold);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .exercise-title {
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        .exercise-q { font-weight: 600; margin-bottom: 1rem; font-size: 1rem; }
+        .options { display: flex; flex-direction: column; gap: 0.5rem; }
+        .opt-btn {
+            text-align: left;
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            padding: 0.7rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+        .opt-btn:hover { border-color: var(--navy); background: #eff6ff; }
+        .opt-btn.correct { background: #ecfdf5; border-color: var(--emerald); color: var(--emerald); font-weight: 600; }
+        .opt-btn.wrong { background: #fef2f2; border-color: var(--crimson); color: var(--crimson); }
+
+        /* Explicação Detalhada Pós-Resposta */
+        .feedback {
+            display: none;
+            margin-top: 1rem;
+            padding: 1.1rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .feedback.show { display: block; animation: fadeIn 0.3s ease; }
+        .feedback.ok { background: #ecfdf5; border-left: 4px solid var(--emerald); color: #064e3b; }
+        .feedback.err { background: #fef2f2; border-left: 4px solid var(--crimson); color: #7f1d1d; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 900px) {
+            aside { display: none; }
+            main { margin-left: 0; padding: 1rem; }
+            .book-sheet { padding: 1.75rem 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <h1><small>Compêndio de Matemática</small>Estatística Aplicada</h1>
+        <nav id="toc"></nav>
+    </aside>
+
+    <main>
+        <article class="book-sheet">
+            <header class="book-cover">
+                <span>Edição Didática Interativa</span>
+                <h2>Fundamentos de Estatística</h2>
+                <p>Teoria ilustrada, demonstrações visuais passo a passo e exercícios resolvidos</p>
+            </header>
+            <div id="book-content"></div>
+        </article>
+    </main>
+
+    <script>
+        // Banco de Dados do Livro (Estrutura limpa sem repetição de HTML)
+        const capitulos = [
+            {
+                titulo: "Estatística: conceito e uso",
+                texto: "A Estatística é o ramo da Matemática que fornece métodos para coletar, organizar, resumir, analisar e interpretar dados. Divide-se em <b>Estatística Descritiva</b> (organiza dados em tabelas e gráficos) e <b>Estatística Inferencial</b> (tira conclusões sobre o todo a partir de uma parte).",
+                formula: "Coleta → Organização → Análise → Tomada de Decisão",
+                svg: `<svg width="100%" height="110" viewBox="0 0 600 110">
+                        <rect x="20" y="25" width="150" height="60" rx="8" fill="#dbeafe" stroke="#1e3a8a" stroke-width="2"/>
+                        <text x="95" y="52" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="13">1. Dados Brutos</text>
+                        <text x="95" y="70" text-anchor="middle" fill="#475569" font-size="11">Pesquisa & Coleta</text>
+                        <path d="M180 55 L215 55" stroke="#b45309" stroke-width="2" marker-end="url(#arrow)"/>
+                        <rect x="225" y="25" width="150" height="60" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+                        <text x="300" y="52" text-anchor="middle" font-weight="bold" fill="#92400e" font-size="13">2. Descritiva</text>
+                        <text x="300" y="70" text-anchor="middle" fill="#475569" font-size="11">Tabelas, Médias, Gráficos</text>
+                        <path d="M385 55 L420 55" stroke="#047857" stroke-width="2"/>
+                        <rect x="430" y="25" width="150" height="60" rx="8" fill="#d1fae5" stroke="#047857" stroke-width="2"/>
+                        <text x="505" y="52" text-anchor="middle" font-weight="bold" fill="#065f46" font-size="13">3. Inferencial</text>
+                        <text x="505" y="70" text-anchor="middle" fill="#475569" font-size="11">Previsões & Decisões</text>
+                      </svg>`,
+                legenda: "Figura 1.1 — Fluxo do método estatístico.",
+                pergunta: "Um instituto calcula a média de notas apenas dos alunos da turma 3ºA para descrever o desempenho daquela sala. Qual ramo da estatística está sendo usado?",
+                opcoes: ["Estatística Inferencial, pois está prevendo o futuro.", "Estatística Descritiva, pois apenas resume os dados observados.", "Probabilidade pura."],
+                correta: 1,
+                explicacao: "<b>Por quê?</b> Como o objetivo é apenas resumir e descrever os dados da própria turma observada (sem generalizar para outras escolas), trata-se de <b>Estatística Descritiva</b>."
+            },
+            {
+                titulo: "Pesquisa estatística",
+                texto: "Uma pesquisa estatística pode ser <b>Censitária</b> (investiga 100% dos elementos, como o Censo do IBGE) ou <b>Amostral</b> (investiga apenas uma parcela representativa por questões de custo e tempo).",
+                formula: "Censo = 100% do Universo  |  Amostragem = Parcela Representativa",
+                svg: "",
+                pergunta: "Uma fábrica de lâmpadas precisa testar a duração (vida útil até queimar) de um lote de 50.000 unidades. Qual tipo de pesquisa deve ser feita?",
+                opcoes: ["Censitária, testando todas as 50.000 lâmpadas.", "Amostral, pois o teste destrói o produto."],
+                correta: 1,
+                explicacao: "<b>Passo a passo:</b> Se a fábrica testasse todas as lâmpadas até queimarem (Censo), não sobraria nenhuma para vender! Por isso, testes destrutivos exigem obrigatoriamente uma <b>pesquisa amostral</b>."
+            },
+            {
+                titulo: "População e amostra",
+                texto: "<b>População (N)</b> é o conjunto completo de elementos com uma característica em comum. <b>Amostra (n)</b> é um subconjunto finito extraído da população para representá-la.",
+                formula: "n ⊂ N   (A amostra n está contida na população N)",
+                svg: `<svg width="100%" height="130" viewBox="0 0 500 130">
+                        <ellipse cx="180" cy="65" rx="130" ry="52" fill="#eff6ff" stroke="#1e3a8a" stroke-width="2"/>
+                        <text x="120" y="55" font-weight="bold" fill="#1e3a8a" font-size="14">POPULAÇÃO (N)</text>
+                        <text x="120" y="75" fill="#475569" font-size="12">Todos os eleitores do país</text>
+                        <circle cx="380" cy="65" r="42" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+                        <text x="380" y="62" text-anchor="middle" font-weight="bold" fill="#92400e" font-size="12">AMOSTRA (n)</text>
+                        <text x="380" y="78" text-anchor="middle" fill="#475569" font-size="10">2.000 entrevistados</text>
+                        <path d="M265 45 Q310 20 345 45" fill="none" stroke="#b45309" stroke-width="2" stroke-dasharray="4"/>
+                      </svg>`,
+                legenda: "Figura 3.1 — Extração de uma amostra representativa (n) a partir da população (N).",
+                pergunta: "Para saber a altura média dos 1.200 estudantes de um colégio, foram medidos 80 alunos sorteados. Quem é a amostra?",
+                opcoes: ["Os 1.200 estudantes do colégio.", "Os 80 alunos sorteados.", "A altura média encontrada."],
+                correta: 1,
+                explicacao: "<b>Resolução:</b> Os 1.200 estudantes formam a <b>População (N)</b>. O grupo menor selecionado para medição (os <b>80 alunos</b>) é a <b>Amostra (n)</b>."
+            },
+            {
+                titulo: "Tipos de variáveis",
+                texto: "As variáveis classificam-se em <b>Qualitativas</b> (atributos/categorias: <i>Nominal</i> sem ordem, ou <i>Ordinal</i> com hierarquia) e <b>Quantitativas</b> (números: <i>Discreta</i> por contagem inteira, ou <i>Contínua</i> por medição).",
+                formula: "Qualitativa (Nominal | Ordinal)   •   Quantitativa (Discreta | Contínua)",
+                svg: "",
+                pergunta: "Classifique a variável 'Temperatura corporal de um paciente (ex: 36,8 °C)':",
+                opcoes: ["Qualitativa Ordinal", "Quantitativa Discreta", "Quantitativa Contínua"],
+                correta: 2,
+                explicacao: "<b>Como identificar:</b> Temperatura é um número obtido por medição (termômetro) e pode assumir valores decimais infinitos dentro de um intervalo (36,5; 36,82...). Logo, é <b>Quantitativa Contínua</b>."
+            },
+            {
+                titulo: "Distribuição de frequência",
+                texto: "Organiza os dados brutos (rol) em uma tabela contando quantas vezes cada valor ocorre. Temos a <b>Frequência Absoluta (fᵢ)</b>, a <b>Frequência Relativa (frᵢ = fᵢ / n)</b> e a <b>Frequência Acumulada (Fᵢ)</b>.",
+                formula: "frᵢ = fᵢ / n     |     Fᵢ = f₁ + f₂ + ... + fᵢ",
+                svg: "",
+                pergunta: "Em uma turma de n = 25 alunos, 5 tiraram nota 10. Qual é a frequência relativa percentual dessa nota?",
+                opcoes: ["5%", "20%", "25%"],
+                correta: 1,
+                explicacao: "<b>Cálculo passo a passo:</b><br>1. Divida a frequência absoluta pelo total: <code>fr = 5 / 25 = 0,20</code>.<br>2. Multiplique por 100 para achar a porcentagem: <code>0,20 × 100 = 20%</code>."
+            },
+            {
+                titulo: "Representação gráfica",
+                texto: "Gráficos traduzem tabelas em formas visuais. Os principais são: <b>Colunas/Barras</b> (comparação entre categorias), <b>Setores/Pizza</b> (proporção de um todo em 360°) e <b>Linhas</b> (evolução temporal).",
+                formula: "Ângulo do Setor (α) = (fᵢ / n) × 360°",
+                svg: "",
+                pergunta: "Em um gráfico de setores (pizza), uma categoria representa 25% do total. Qual é o ângulo central dessa fatia?",
+                opcoes: ["25°", "45°", "90°"],
+                correta: 2,
+                explicacao: "<b>Resolução:</b> Um círculo completo tem 360°. Calculamos 25% de 360°:<br><code>0,25 × 360° = 90°</code> (um quarto do círculo)."
+            },
+            {
+                titulo: "Histograma de frequência",
+                texto: "Diferente do gráfico de barras comum, o <b>Histograma</b> possui retângulos <b>justapostos (colados)</b>, pois representa variáveis quantitativas contínuas divididas em intervalos de classe.",
+                formula: "Base do retângulo = Amplitude da classe (h)  |  Altura = Frequência (fᵢ)",
+                svg: `<svg width="100%" height="145" viewBox="0 0 520 145">
+                        <line x1="60" y1="115" x2="460" y2="115" stroke="#1e293b" stroke-width="2"/>
+                        <line x1="60" y1="15" x2="60" y2="115" stroke="#1e293b" stroke-width="2"/>
+                        <rect x="80" y="75" width="80" height="40" fill="#93c5fd" stroke="#1e3a8a" stroke-width="2"/>
+                        <rect x="160" y="35" width="80" height="80" fill="#3b82f6" stroke="#1e3a8a" stroke-width="2"/>
+                        <rect x="240" y="55" width="80" height="60" fill="#60a5fa" stroke="#1e3a8a" stroke-width="2"/>
+                        <rect x="320" y="90" width="80" height="25" fill="#bfdbfe" stroke="#1e3a8a" stroke-width="2"/>
+                        <text x="80" y="132" font-size="11" text-anchor="middle">10</text>
+                        <text x="160" y="132" font-size="11" text-anchor="middle">20</text>
+                        <text x="240" y="132" font-size="11" text-anchor="middle">30</text>
+                        <text x="320" y="132" font-size="11" text-anchor="middle">40</text>
+                        <text x="400" y="132" font-size="11" text-anchor="middle">50</text>
+                        <text x="200" y="27" font-size="11" font-weight="bold" fill="#1e3a8a" text-anchor="middle">Classe Modal (maior altura)</text>
+                      </svg>`,
+                legenda: "Figura 7.1 — Note que não há espaço entre as barras porque o fim de uma classe (20) é o início da próxima.",
+                pergunta: "Por que as barras de um histograma ficam coladas umas nas outras?",
+                opcoes: ["Apenas por estética visual.", "Para indicar continuidade numérica entre os intervalos de classe.", "Porque há poucos dados."],
+                correta: 1,
+                explicacao: "<b>Conceito chave:</b> Como o limite superior de uma classe (ex: 10 ⊢ 20) encosta exatamente no limite inferior da seguinte (20 ⊢ 30), as barras são coladas para mostrar <b>continuidade</b>."
+            },
+            {
+                titulo: "Medidas de tendência central para dados não agrupados",
+                texto: "Resumem uma lista simples de números: <b>Média (x̄)</b> é a soma dividida pela quantidade; <b>Mediana (Md)</b> é o termo central após ordenar; <b>Moda (Mo)</b> é o valor mais frequente.",
+                formula: "x̄ = ∑xᵢ / n   |   Md = termo central do rol ordenado   |   Mo = maior frequência",
+                svg: "",
+                pergunta: "Considere os dados: {8, 2, 5, 2, 13}. Qual é a Mediana desse conjunto?",
+                opcoes: ["5", "2", "6"],
+                correta: 0,
+                explicacao: "<b>Passo a passo:</b><br>1. <b>Erro comum:</b> pegar o 5 direto sem ordenar! Primeiro coloque em ordem crescente: <code>{2, 2, 5, 8, 13}</code>.<br>2. Como há 5 números, o termo exatamente no meio (3ª posição) é o <b>5</b>."
+            },
+            {
+                titulo: "Moda e mediana para dados agrupados sem intervalo de classe",
+                texto: "Quando os dados estão em uma tabela simples (xᵢ e fᵢ), a <b>Moda</b> é o valor xᵢ com maior frequência fᵢ. A <b>Mediana</b> é encontrada localizando a posição <code>n/2</code> na coluna de <b>Frequência Acumulada (Fᵢ)</b>.",
+                formula: "Posição da Mediana = n / 2 (consultar na Frequência Acumulada Fᵢ)",
+                svg: "",
+                pergunta: "Em uma tabela: Idade 15 (f=4), Idade 16 (f=10), Idade 17 (f=6). Qual é a Moda?",
+                opcoes: ["10", "16", "17"],
+                correta: 1,
+                explicacao: "<b>Cuidado para não confundir:</b> 10 é a frequência (quantidade de alunos), mas a variável estudada é a <b>Idade</b>. A idade que mais se repete é <b>16 anos</b>."
+            },
+            {
+                titulo: "Medidas de tendência central para dados agrupados sem intervalo de classe (Média)",
+                texto: "Para calcular a <b>Média</b> em tabelas sem intervalos, usamos a média aritmética ponderada, multiplicando cada valor xᵢ pela sua frequência fᵢ.",
+                formula: "x̄ = (x₁·f₁ + x₂·f₂ + ... + xₖ·fₖ) / ∑fᵢ",
+                svg: "",
+                pergunta: "Um aluno tirou nota 6 (peso/freq 2) e nota 9 (peso/freq 1). Qual é a sua média?",
+                opcoes: ["7,5", "7,0", "8,0"],
+                correta: 1,
+                explicacao: "<b>Passo a passo:</b><br>1. Multiplique cada nota pela sua frequência: <code>(6 × 2) + (9 × 1) = 12 + 9 = 21</code>.<br>2. Divida pela soma das frequências (2 + 1 = 3): <code>21 / 3 = 7,0</code>."
+            },
+            {
+                titulo: "Medidas de tendência central para dados agrupados com intervalo de classe I",
+                texto: "Quando os valores estão em faixas (ex: <code>10 ⊢ 20</code>), calculamos o <b>Ponto Médio (pmᵢ)</b> de cada faixa para achar a média, e aplicamos a fórmula de interpolação de Czuber para a Mediana.",
+                formula: "pmᵢ = (L_inf + L_sup) / 2     |     Md = Lᵢ + [ ((n/2 - F_ant) / f_md) · h ]",
+                svg: `<svg width="100%" height="105" viewBox="0 0 540 105">
+                        <rect x="30" y="20" width="480" height="65" rx="6" fill="#fff" stroke="#1e3a8a" stroke-width="1.5"/>
+                        <text x="50" y="45" font-family="JetBrains Mono" font-size="13" fill="#1e3a8a" font-weight="bold">Classe: 20 ⊢ 30</text>
+                        <text x="50" y="68" font-size="12" fill="#475569">Lᵢ = 20 (limite inferior)  |  h = 30 - 20 = 10 (amplitude)  |  pmᵢ = (20+30)/2 = 25</text>
+                      </svg>`,
+                legenda: "Figura 11.1 — Extraindo os parâmetros de uma classe com intervalo.",
+                pergunta: "Para a classe salarial '1000 ⊢ 1400', qual é o Ponto Médio (pmᵢ) usado no cálculo da média?",
+                opcoes: ["400", "1200", "1400"],
+                correta: 1,
+                explicacao: "<b>Resolução:</b> O ponto médio é a média entre os extremos do intervalo:<br><code>pm = (1000 + 1400) / 2 = 2400 / 2 = 1200</code>."
+            },
+            {
+                titulo: "Medidas de dispersão",
+                texto: "Mostram se os dados estão concentrados perto da média ou espalhados. As principais são: <b>Amplitude Total</b>, <b>Variância (s²)</b> e <b>Desvio Padrão (s)</b>.",
+                formula: "AT = Máx - Mín   |   s² = ∑(xᵢ - x̄)² / (n - 1)   |   s = √s²",
+                svg: "",
+                pergunta: "Dois grupos têm média 7,0. Grupo A: {7, 7, 7}. Grupo B: {1, 7, 13}. Qual grupo tem Desvio Padrão igual a ZERO?",
+                opcoes: ["Grupo A", "Grupo B", "Ambos"],
+                correta: 0,
+                explicacao: "<b>Por quê?</b> O desvio padrão mede a distância dos valores até a média. No <b>Grupo A</b>, todos os valores são iguais à média (7 - 7 = 0), portanto não há variação nenhuma: <b>s = 0</b>."
+            },
+            {
+                titulo: "Quartis",
+                texto: "Os <b>Quartis</b> dividem o rol ordenado em 4 partes iguais de 25% cada: <b>Q₁</b> (25%), <b>Q₂</b> (50%, igual à Mediana) e <b>Q₃</b> (75%).",
+                formula: "AIQ (Amplitude Interquartil) = Q₃ - Q₁  (concentra os 50% dados centrais)",
+                svg: `<svg width="100%" height="95" viewBox="0 0 540 95">
+                        <rect x="40" y="30" width="115" height="30" fill="#dbeafe" stroke="#1e3a8a"/>
+                        <rect x="155" y="30" width="115" height="30" fill="#93c5fd" stroke="#1e3a8a"/>
+                        <rect x="270" y="30" width="115" height="30" fill="#60a5fa" stroke="#1e3a8a"/>
+                        <rect x="385" y="30" width="115" height="30" fill="#3b82f6" stroke="#1e3a8a"/>
+                        <text x="97" y="50" text-anchor="middle" font-size="12" font-weight="bold">25%</text>
+                        <text x="212" y="50" text-anchor="middle" font-size="12" font-weight="bold">25%</text>
+                        <text x="327" y="50" text-anchor="middle" font-size="12" font-weight="bold">25%</text>
+                        <text x="442" y="50" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">25%</text>
+                        <text x="155" y="80" text-anchor="middle" font-size="12" font-weight="bold" fill="#b45309">Q₁</text>
+                        <text x="270" y="80" text-anchor="middle" font-size="12" font-weight="bold" fill="#b45309">Q₂ (Md)</text>
+                        <text x="385" y="80" text-anchor="middle" font-size="12" font-weight="bold" fill="#b45309">Q₃</text>
+                      </svg>`,
+                legenda: "Figura 13.1 — Divisão proporcional dos dados pelos três quartis.",
+                pergunta: "Se o terceiro quartil (Q₃) das notas de um concurso foi 72 pontos, o que isso significa?",
+                opcoes: ["75% dos candidatos tiraram até 72 pontos (e 25% tiraram acima).", "Apenas 3 candidatos tiraram 72.", "A média foi 72."],
+                correta: 0,
+                explicacao: "<b>Interpretação:</b> O <b>Q₃</b> marca a fronteira dos <b>75%</b> menores valores da distribuição."
+            },
+            {
+                titulo: "Box-plot",
+                texto: "O <b>Box-plot (Diagrama de Caixa)</b> desenha os 5 números resumo: Mínimo, Q₁, Mediana (Q₂), Q₃ e Máximo, revelando a simetria dos dados e possíveis valores discrepantes (<i>outliers</i>).",
+                formula: "Resumo dos 5 Números: [ Mínimo  |  Q₁  |  Mediana  |  Q₃  |  Máximo ]",
+                svg: `<svg width="100%" height="130" viewBox="0 0 540 130">
+                        <line x1="70" y1="60" x2="470" y2="60" stroke="#475569" stroke-width="2"/>
+                        <line x1="70" y1="42" x2="70" y2="78" stroke="#1e3a8a" stroke-width="3"/>
+                        <line x1="470" y1="42" x2="470" y2="78" stroke="#1e3a8a" stroke-width="3"/>
+                        <rect x="170" y="30" width="200" height="60" fill="#fef3c7" stroke="#b45309" stroke-width="2.5"/>
+                        <line x1="250" y1="30" x2="250" y2="90" stroke="#047857" stroke-width="3.5"/>
+                        <text x="70" y="105" text-anchor="middle" font-size="12">Mínimo</text>
+                        <text x="170" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#b45309">Q₁</text>
+                        <text x="250" y="108" text-anchor="middle" font-size="12" font-weight="bold" fill="#047857">Mediana</text>
+                        <text x="370" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#b45309">Q₃</text>
+                        <text x="470" y="105" text-anchor="middle" font-size="12">Máximo</text>
+                      </svg>`,
+                legenda: "Figura 14.1 — Anatomia completa de um Box-plot.",
+                pergunta: "No Box-plot, o que representa o comprimento total da caixa retangular central?",
+                opcoes: ["A Amplitude Total (Máx - Mín).", "A Amplitude Interquartil (Q₃ - Q₁), onde estão os 50% dados centrais.", "O valor da média."],
+                correta: 1,
+                explicacao: "<b>Visualizando na Figura 14.1:</b> A caixa começa em <b>Q₁</b> (25%) e termina em <b>Q₃</b> (75%). Portanto, sua largura é <code>Q₃ - Q₁</code>, englobando a metade central da amostra."
+            },
+            {
+                titulo: "Construção e conversão de dados entre gráficos estatísticos",
+                texto: "Converter informações entre uma tabela de frequências, um gráfico de barras ou de setores exige manter a proporcionalidade entre a frequência absoluta (fᵢ), o percentual (%) e o ângulo (360°).",
+                formula: "fᵢ / n  =  Percentual / 100%  =  Ângulo / 360°",
+                svg: "",
+                pergunta: "Em uma pesquisa com 40 pessoas, 10 preferem Matemática. Se convertermos essa tabela para um gráfico de setores, qual ângulo representa Matemática?",
+                opcoes: ["40°", "90°", "100°"],
+                correta: 1,
+                explicacao: "<b>Passo a passo:</b><br>1. Proporção: <code>10 / 40 = 1/4 = 0,25</code> (25%).<br>2. Conversão para graus: <code>0,25 × 360° = 90°</code>."
+            },
+            {
+                titulo: "Diagrama de ramos e folhas",
+                texto: "Organiza dados numéricos dividindo cada número em duas partes: o <b>Ramo</b> (algarismo da dezena/centena) e a <b>Folha</b> (último algarismo). A vantagem é manter todos os valores originais visíveis.",
+                formula: "Número 27  →  Ramo: 2  |  Folha: 7",
+                svg: `<svg width="100%" height="115" viewBox="0 0 500 115">
+                        <rect x="90" y="15" width="320" height="85" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+                        <line x1="175" y1="22" x2="175" y2="92" stroke="#1e3a8a" stroke-width="2"/>
+                        <text x="145" y="38" font-family="JetBrains Mono" font-size="13" font-weight="bold" fill="#1e3a8a" text-anchor="end">Ramo</text>
+                        <text x="190" y="38" font-family="JetBrains Mono" font-size="13" font-weight="bold" fill="#1e3a8a">Folhas (Dados: 12, 15, 24, 29)</text>
+                        <text x="155" y="62" font-family="JetBrains Mono" font-size="14" text-anchor="end">1</text>
+                        <text x="190" y="62" font-family="JetBrains Mono" font-size="14" fill="#047857">2   5</text>
+                        <text x="155" y="84" font-family="JetBrains Mono" font-size="14" text-anchor="end">2</text>
+                        <text x="190" y="84" font-family="JetBrains Mono" font-size="14" fill="#047857">4   9</text>
+                      </svg>`,
+                legenda: "Figura 16.1 — Leitura: Ramo 1 com folhas 2 e 5 representa os números 12 e 15.",
+                pergunta: "Em um diagrama de ramos e folhas, a linha '3 | 0 4 4 8' representa quais números?",
+                opcoes: ["30, 34, 34 e 38", "3, 0, 4, 4 e 8", "304 e 348"],
+                correta: 0,
+                explicacao: "<b>Como ler:</b> O ramo <b>3</b> (dezena 30) combina-se individualmente com cada folha à direita: 30, 34, 34 e 38 (4 observações)."
+            },
+            {
+                titulo: "Critérios de seleção e adequação de gráficos estatísticos",
+                texto: "Cada tipo de variável exige um gráfico adequado: use <b>Linhas</b> para evolução no tempo, <b>Setores</b> para poucas categorias somando 100%, <b>Barras</b> para comparar categorias e <b>Histograma</b> para dados contínuos agrupados.",
+                formula: "Tempo → Linhas  |  Proporção (≤5 fatias) → Setores  |  Classes Contínuas → Histograma",
+                svg: "",
+                pergunta: "Você quer mostrar a variação do preço do dólar dia após dia durante o mês de novembro. Qual é o gráfico mais adequado?",
+                opcoes: ["Gráfico de Setores (Pizza)", "Gráfico de Linhas", "Histograma"],
+                correta: 1,
+                explicacao: "<b>Critério de escolha:</b> Como o objetivo é acompanhar a evolução contínua de um valor ao longo do tempo (série temporal), o <b>Gráfico de Linhas</b> evidencia perfeitamente subidas e quedas."
+            }
+        ];
+
+        // Renderizador Automático do Livro
+        const toc = document.getElementById('toc');
+        const content = document.getElementById('book-content');
+
+        capitulos.forEach((cap, idx) => {
+            const num = String(idx + 1).padStart(2, '0');
+            
+            // Adiciona ao Sumário
+            toc.innerHTML += `<a href="#cap-${idx}"><b>${num}.</b> ${cap.titulo}</a>`;
+
+            // Monta Ilustração se existir
+            const figuraHTML = cap.svg ? `
+                <figure class="figure-box">
+                    ${cap.svg}
+                    <figcaption>${cap.legenda}</figcaption>
+                </figure>` : '';
+
+            // Monta Opções da Questão
+            const opcoesHTML = cap.opcoes.map((opt, oIdx) => 
+                `<button class="opt-btn" onclick="responder(${idx}, ${oIdx}, this)">${String.fromCharCode(65 + oIdx)}) ${opt}</button>`
+            ).join('');
+
+            // Injeta Capítulo na Página
+            content.innerHTML += `
+                <section id="cap-${idx}" class="chapter">
+                    <span class="chapter-num">Capítulo ${num}</span>
+                    <h3>${cap.titulo}</h3>
+                    <p>${cap.texto}</p>
+                    <div class="formula">${cap.formula}</div>
+                    ${figuraHTML}
+                    <div class="exercise-box">
+                        <div class="exercise-title">✍ Exercício de Fixação</div>
+                        <div class="exercise-q">${cap.pergunta}</div>
+                        <div class="options" id="opts-${idx}">${opcoesHTML}</div>
+                        <div class="feedback" id="fb-${idx}"></div>
+                    </div>
+                </section>
+            `;
+        });
+
+        // Função de Correção Interativa
+        function responder(capIdx, optIdx, btn) {
+            const cap = capitulos[capIdx];
+            const container = document.getElementById(`opts-${capIdx}`);
+            const fb = document.getElementById(`fb-${capIdx}`);
+
+            // Limpa marcações anteriores
+            container.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('correct', 'wrong'));
+
+            if (optIdx === cap.correta) {
+                btn.classList.add('correct');
+                fb.className = 'feedback show ok';
+                fb.innerHTML = `<strong>✔ Resposta Correta!</strong><br>${cap.explicacao}`;
+            } else {
+                btn.classList.add('wrong');
+                container.children[cap.correta].classList.add('correct');
+                fb.className = 'feedback show err';
+                fb.innerHTML = `<strong>✘ Não foi dessa vez!</strong> Veja a explicação detalhada:<br>${cap.explicacao}`;
+            }
+        }
+    </script>
+</body>
+</html>
